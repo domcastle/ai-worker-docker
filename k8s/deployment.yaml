@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ai-worker
-  namespace: my-project  # 본인의 ROSA 프로젝트 이름으로 꼭 수정하세요!
+  namespace: my-project  # 나중에 실제 ROSA 프로젝트 이름으로 변경하세요
   labels:
     app: ai-worker
 spec:
@@ -16,9 +16,13 @@ spec:
         app: ai-worker
     spec:
       containers:
-      - name: team1-images
-        # 아래 주소는 처음에만 넣으면 됩니다. 나중에 GitHub Actions가 알아서 바꿔줍니다.
-        image: 123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/ai-worker:latest 
+      # 1. 컨테이너 이름은 'ai-worker'로 되돌려놓습니다 (라벨과 일치)
+      - name: ai-worker
+      
+        # 2. [핵심 수정] 이미지 주소 중간에 'team1-images'가 꼭 들어가야 합니다!
+        # (GitHub Actions가 이 단어를 찾아서 진짜 주소로 바꿔줍니다)
+        image: 123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/team1-images:latest
+        
         imagePullPolicy: Always
         env:
         # AWS 인증 정보 (Secret 연결)
